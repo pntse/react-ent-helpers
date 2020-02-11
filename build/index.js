@@ -100,11 +100,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _formatPhoneNumber__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "formatPhoneNumber", function() { return _formatPhoneNumber__WEBPACK_IMPORTED_MODULE_2__["formatPhoneNumber"]; });
 
-/* harmony import */ var _get__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5);
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "get", function() { return _get__WEBPACK_IMPORTED_MODULE_3__["get"]; });
+/* harmony import */ var _getValue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5);
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "getValue", function() { return _getValue__WEBPACK_IMPORTED_MODULE_3__["getValue"]; });
 
-/* harmony import */ var _has__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(6);
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "has", function() { return _has__WEBPACK_IMPORTED_MODULE_4__["has"]; });
+/* harmony import */ var _hasValue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(6);
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "hasValue", function() { return _hasValue__WEBPACK_IMPORTED_MODULE_4__["hasValue"]; });
 
 /* harmony import */ var _makeCamelCaseNormal__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(7);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "makeCamelCaseNormal", function() { return _makeCamelCaseNormal__WEBPACK_IMPORTED_MODULE_5__["makeCamelCaseNormal"]; });
@@ -150,7 +150,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-
+ // TODO: Refactor. Should not use arrow functions in class.
 
 var Compare =
 /*#__PURE__*/
@@ -608,8 +608,8 @@ var removeNonNumericChars = function removeNonNumericChars(value) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "get", function() { return get; });
-var get = function get(obj, path, defaultValue) {
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getValue", function() { return getValue; });
+var getValue = function getValue(obj, path, defaultValue) {
   return path.split('.').reduce(function (a, c) {
     return a != null && typeof a != 'undefined' && a[c] != null && typeof a[c] != 'undefined' ? a[c] : defaultValue != null ? defaultValue : null;
   }, obj);
@@ -621,11 +621,11 @@ var get = function get(obj, path, defaultValue) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "has", function() { return has; });
-/* harmony import */ var _get__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "hasValue", function() { return hasValue; });
+/* harmony import */ var _getValue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
 
-var has = function has(obj, path) {
-  var value = Object(_get__WEBPACK_IMPORTED_MODULE_0__["get"])(obj, path);
+var hasValue = function hasValue(obj, path) {
+  var value = Object(_getValue__WEBPACK_IMPORTED_MODULE_0__["getValue"])(obj, path);
   return value == null ? false : true;
 };
 

@@ -1,5 +1,6 @@
 import { deepCopy } from './deepCopy';
 
+// TODO: Refactor. Should not use arrow functions in class.
 class Compare {
   constructor() {
     this.value = null;
