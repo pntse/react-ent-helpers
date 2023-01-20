@@ -6,7 +6,7 @@ import Compare from './Compare';
  * @param {array} arr
  * @param {object} obj
  */
-export const objectIndexOf = (arr, obj) => {
+export const objectIndexOf = (arr: Array<any>, obj: object): number => {
   for (let i = 0; i < arr.length; i++) {
     if (Compare.deepCompare(arr[i], obj).isEqual) {
       return i;

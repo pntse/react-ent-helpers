@@ -1,6 +1,6 @@
 import { objectIndexOf } from './objectIndexOf';
 
-export const removeDuplicates = arr => {
+export const removeDuplicates = (arr: Array<any>): Array<any> => {
   let newArr = [];
 
   for (let i = 0; i < arr.length; i++) {

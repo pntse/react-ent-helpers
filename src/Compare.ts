@@ -2,10 +2,18 @@ import { deepCopy } from './deepCopy';
 
 // TODO: Refactor. Should not use arrow functions in class.
 class Compare {
+  depthTracking: { depth: number; path: Array<string> };
+  value: any;
+  log: { a: any; b: any; message: string; path: string };
+  errorStyles;
+  standardStyles;
+  pathStyles;
+  clientLogger: object;
+
   constructor() {
     this.value = null;
-    this.depthTracking = {};
-    this.log = {};
+    this.depthTracking = { depth: null, path: null };
+    this.log = { a: null, b: null, path: null, message: null };
     this.errorStyles = 'color:red;';
     this.standardStyles = 'color:black;';
     this.pathStyles = 'font-style:italic;color:blue;';
@@ -25,7 +33,7 @@ class Compare {
    * @param {*} b
    * @param {boolean} strictEquality
    */
-  deepCompare = (a, b, strictEquality = true) => {
+  deepCompare = (a: any, b: any, strictEquality = true) => {
     const { _resetLog, _incrementDepth, _pass, _fail } = this;
 
     /* #region  Reset log if necessary */
@@ -77,7 +85,9 @@ class Compare {
       const isStrictEqual = a === b;
 
       if (strictEquality && !isStrictEqual) {
-        const msg = isEqual ? 'The values are different types' : 'The values are not equal';
+        const msg = isEqual
+          ? 'The values are different types'
+          : 'The values are not equal';
 
         return _fail(a, b, msg);
       } else if (!isEqual) {
@@ -104,7 +114,8 @@ class Compare {
     /* #region  Date comparison */
     if (a instanceof Date && b instanceof Date) {
       // compare dates
-      const isEqual = new Date(a.getTime()).toString() === new Date(b.getTime()).toString();
+      const isEqual =
+        new Date(a.getTime()).toString() === new Date(b.getTime()).toString();
 
       if (!isEqual) {
         return _fail(a, b, 'The dates are not equal');
@@ -154,7 +165,10 @@ class Compare {
           if (a.length !== b.length) {
             return _fail(a, b, 'The arrays contain different values');
           } else {
-            this.depthTracking.path.splice(this.depthTracking.path.length - 1, 1);
+            this.depthTracking.path.splice(
+              this.depthTracking.path.length - 1,
+              1
+            );
           }
         } else if (typeof x === 'function') {
           for (let bI = b.length - 1; bI >= 0; --bI) {
@@ -172,7 +186,11 @@ class Compare {
 
           if (bI === -1) {
             // Value didn't exist. Exit comparison.
-            return _fail(a, b, 'Value in first array did not exist in second array');
+            return _fail(
+              a,
+              b,
+              'Value in first array did not exist in second array'
+            );
           } else {
             // Value exists. Remove both values from arrays.
             a.splice(aI, 1);
@@ -196,7 +214,11 @@ class Compare {
       // After first array is empty, check against length of second array.
       // if lengths are not equal, then arrays are not equal.
       if (a.length !== b.length) {
-        return _fail(a, b, 'Value in second array did not exist in first array');
+        return _fail(
+          a,
+          b,
+          'Value in second array did not exist in first array'
+        );
       }
 
       // Arrays were the same length.
@@ -221,24 +243,46 @@ class Compare {
         // to break down the object a little further.
         // If not an object, handle function and primitive comparisons right here.
         /* #endregion */
-        if (typeof a[propertyName] === 'object' && typeof b[propertyName] === 'object') {
+        if (
+          typeof a[propertyName] === 'object' &&
+          typeof b[propertyName] === 'object'
+        ) {
           this.depthTracking.path.push(propertyName);
-          const isEqual = this.deepCompare(a[propertyName], b[propertyName], strictEquality).isEqual;
+          const isEqual = this.deepCompare(
+            a[propertyName],
+            b[propertyName],
+            strictEquality
+          ).isEqual;
           if (!isEqual) {
             return _fail(a, b, "The objects' properties have different values");
           } else {
-            this.depthTracking.path.splice(this.depthTracking.path.length - 1, 1);
+            this.depthTracking.path.splice(
+              this.depthTracking.path.length - 1,
+              1
+            );
           }
-        } else if (typeof a[propertyName] === 'object' || typeof b[propertyName] === 'object') {
+        } else if (
+          typeof a[propertyName] === 'object' ||
+          typeof b[propertyName] === 'object'
+        ) {
           return _fail(a, b, 'Only one of the properties is an object');
-        } else if (typeof a[propertyName] === 'function' && typeof b[propertyName] === 'function') {
+        } else if (
+          typeof a[propertyName] === 'function' &&
+          typeof b[propertyName] === 'function'
+        ) {
           if (a[propertyName].toString() !== b[propertyName].toString()) {
             return _fail(a, b, 'The functions are different');
           }
-        } else if (typeof a[propertyName] === 'function' || typeof b[propertyName] === 'function') {
+        } else if (
+          typeof a[propertyName] === 'function' ||
+          typeof b[propertyName] === 'function'
+        ) {
           return _fail(a, b, 'Only one of the values is a function');
         } else if (strictEquality && a[propertyName] !== b[propertyName]) {
-          const msg = a[propertyName] == b[propertyName] ? 'The values are different types' : 'The values are not equal';
+          const msg =
+            a[propertyName] == b[propertyName]
+              ? 'The values are different types'
+              : 'The values are not equal';
           return _fail(a, b, msg);
         } else if (a[propertyName] != b[propertyName]) {
           return _fail(a, b, 'The values are not equal');
@@ -261,7 +305,9 @@ class Compare {
   consoleLog = (shouldLog = true) => {
     if (shouldLog && typeof this.log.message !== 'undefined') {
       console.log(
-        `######## %cdeepCompare inequality found! ${this.log.message}: %c${this.log.path} %c${JSON.stringify(this.log.a)}%c, %c${JSON.stringify(this.log.b)}%c`,
+        `######## %cdeepCompare inequality found! ${this.log.message}: %c${
+          this.log.path
+        } %c${JSON.stringify(this.log.a)}%c, %c${JSON.stringify(this.log.b)}%c`,
         this.standardStyles,
         this.pathStyles,
         this.errorStyles,
@@ -279,10 +325,12 @@ class Compare {
    *
    * @param {boolean} assertTrue
    */
-  assert = assertTrue => {
+  assert = (assertTrue: boolean) => {
     if (assertTrue && this.value !== assertTrue) {
       console.error(
-        `######## %cdeepCompare inequality found! ${this.log.message}: %c${this.log.path} %c${JSON.stringify(this.log.a)}%c, %c${JSON.stringify(this.log.b)}%c`,
+        `######## %cdeepCompare inequality found! ${this.log.message}: %c${
+          this.log.path
+        } %c${JSON.stringify(this.log.a)}%c, %c${JSON.stringify(this.log.b)}%c`,
         this.standardStyles,
         this.pathStyles,
         this.errorStyles,
@@ -291,7 +339,9 @@ class Compare {
         this.standardStyles
       );
     } else if (!assertTrue && this.value !== assertTrue) {
-      console.error(`######## deepCompare error! The values are equal but expected inequality.`);
+      console.error(
+        `######## deepCompare error! The values are equal but expected inequality.`
+      );
     }
 
     return this;
@@ -303,9 +353,18 @@ class Compare {
    * @param {function} clientLogger
    * @param {boolean} enableLogger
    */
-  attachLogger = (clientLogger, enableLogger = true) => {
-    if (typeof clientLogger === 'function' && typeof this.clientLogger === 'undefined' && enableLogger && typeof this.log.message !== 'undefined') {
-      clientLogger(`######## deepCompare inequality found! ${this.log.message}: ${this.log.path} ${JSON.stringify(this.log.a)}, ${JSON.stringify(this.log.b)}`);
+  attachLogger = (clientLogger: object, enableLogger = true) => {
+    if (
+      typeof clientLogger === 'function' &&
+      typeof this.clientLogger === 'undefined' &&
+      enableLogger &&
+      typeof this.log.message !== 'undefined'
+    ) {
+      clientLogger(
+        `######## deepCompare inequality found! ${this.log.message}: ${
+          this.log.path
+        } ${JSON.stringify(this.log.a)}, ${JSON.stringify(this.log.b)}`
+      );
     }
 
     return this;
@@ -321,7 +380,7 @@ class Compare {
    * @param {*} b
    * @param {string} message
    */
-  _fail = (a, b, message) => {
+  _fail = (a: any, b: any, message: string) => {
     this._logOutput(a, b, message);
     this._decrementDepth();
     this.value = false;
@@ -342,7 +401,7 @@ class Compare {
    * @param {*} b
    * @param {string} message
    */
-  _logOutput = (a, b, message) => {
+  _logOutput = (a: any, b: any, message: string) => {
     // Only capture the first error, not the errors further up.
     if (typeof this.log.message === 'undefined') {
       let path = '';
@@ -375,7 +434,10 @@ class Compare {
    * If at the highest level and an error message exists, log the error.
    */
   _decrementDepth = () => {
-    if (typeof this.depthTracking.depth !== 'undefined' && this.depthTracking.depth > 0) {
+    if (
+      typeof this.depthTracking.depth !== 'undefined' &&
+      this.depthTracking.depth > 0
+    ) {
       this.depthTracking.depth--;
     }
   };
@@ -384,8 +446,11 @@ class Compare {
    * Should reset the log object if necessary.
    */
   _resetLog = () => {
-    if (typeof this.depthTracking.depth === 'undefined' || this.depthTracking.depth === 0) {
-      this.log = {};
+    if (
+      typeof this.depthTracking.depth === 'undefined' ||
+      this.depthTracking.depth === 0
+    ) {
+      this.log = { a: null, b: null, message: null, path: null };
     }
   };
 

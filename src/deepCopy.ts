@@ -1,4 +1,4 @@
-export const deepCopy = obj => {
+export const deepCopy = (obj: any): any => {
   if (typeof obj !== 'object' || obj === null) {
     return obj;
   }
@@ -15,8 +15,8 @@ export const deepCopy = obj => {
   }
 
   if (obj instanceof Object) {
-    return Object.keys(obj).reduce((newObj, key) => {
-      newObj[key] = deepCopy(obj[key]);
+    return Object.keys(obj).reduce((newObj: object, key: string) => {
+      newObj[key as keyof Object] = deepCopy(obj[key]);
       return newObj;
     }, {});
   }
